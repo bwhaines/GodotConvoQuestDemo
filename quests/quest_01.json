@@ -1,0 +1,18 @@
+{
+	"id": "quest_01",
+	"name":"Orange's Message",
+	"giver": "orange",
+	"start_convo": "quest_01_init",
+	"stages": [
+		{
+			"stage_gate": "purple",
+			"end_convo": "quest_01_s00_end"
+		},
+		{
+			"stage_gate": "orange",
+			"end_convo": "quest_01_s01_end"
+		}
+	],
+	"reward_rel_change": 3,
+	"failure_rel_change": -10
+}

@@ -1,0 +1,20 @@
+{
+	"char_id":"green",
+	"lines": [
+	{
+		"name": "Green",
+		"text": "It's nice you want to make up with Orange.",
+		"pic": "res://assets/portraits/green.png"
+	},
+	{
+		"name": "Green",
+		"text": "Even if I think he's a jerk.",
+		"pic": "res://assets/portraits/green.png"
+	},
+	{
+		"name": "Green",
+		"text": "Here's a secret that will make his brain explode...",
+		"pic": "res://assets/portraits/green.png",
+		"quest_step": "quest_03"
+	}
+]}

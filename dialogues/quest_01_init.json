@@ -1,0 +1,25 @@
+{
+	"char_id":"orange",
+	"lines": [
+	{
+		"name": "Orange",
+		"text": "Hey you!",
+		"pic": "res://assets/portraits/orange.png"
+	},
+	{
+		"name": "Orange",
+		"text": "Can you give Purple a message for me?",
+		"pic": "res://assets/portraits/orange.png"
+	},
+	{
+		"name": "Orange",
+		"text": "Whatever you do, DO NOT talk to Green before you talk to Purple.",
+		"pic": "res://assets/portraits/orange.png"
+	},
+	{
+		"name": "Orange",
+		"text": "I will NOT be happy with you if you talk to Green first!",
+		"pic": "res://assets/portraits/orange.png",
+		"quest_step": "quest_01"
+	}
+]}

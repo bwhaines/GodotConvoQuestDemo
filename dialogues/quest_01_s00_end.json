@@ -1,0 +1,20 @@
+{
+	"char_id":"purple",
+	"lines": [
+	{
+		"name": "Purple",
+		"text": "Orange said what about my mom?",
+		"pic": "res://assets/portraits/purple.png"
+	},
+	{
+		"name": "Purple",
+		"text": "Well you tell him...",
+		"pic": "res://assets/portraits/purple.png"
+	},
+	{
+		"name": "Purple",
+		"text": "Oh, and don't talk to Green before Orange.  She just doesn't get it.",
+		"pic": "res://assets/portraits/purple.png",
+		"quest_step": "quest_01"
+	},
+]}

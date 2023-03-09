@@ -1,0 +1,16 @@
+{
+	"char_id":"green",
+	"lines": [
+	{
+		"name": "Green",
+		"text": "Oh! fill me in on the latest drama!",
+		"pic": "res://assets/portraits/green.png"
+	},
+	{
+		"name": "Green",
+		"text": "Wow, that's intense.  Thanks for letting me know!",
+		"pic": "res://assets/portraits/green.png",
+		"quest_fail": "quest_01",
+		"rel_change": {"green":5}
+	}
+]}

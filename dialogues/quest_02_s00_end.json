@@ -1,0 +1,15 @@
+{
+	"char_id":"orange",
+	"lines": [
+	{
+		"name": "Orange",
+		"text": "Woah, Green is just GIVING me this?",
+		"pic": "res://assets/portraits/orange.png"
+	},
+	{
+		"name": "Orange",
+		"text": "It has to be worth, like... nothing!",
+		"pic": "res://assets/portraits/orange.png",
+		"quest_step":"quest_02"
+	}
+]}

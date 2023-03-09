@@ -1,0 +1,19 @@
+{
+	"id": "quest_03",
+	"name":"Redemption",
+	"giver": "purple",
+	"prereq_rels":{"green": 5},
+	"start_convo": "quest_03_init",
+	"stages": [
+		{
+			"stage_gate": "green",
+			"end_convo": "quest_03_s00_end"
+		},
+        {
+            "stage_gate": "orange",
+            "end_convo":"quest_03_s01_end"
+        }
+	],
+	"reward_rel_change": 3,
+	"failure_rel_change": -5
+}

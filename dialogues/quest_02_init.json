@@ -1,0 +1,15 @@
+{
+	"char_id":"green",
+	"lines": [
+	{
+		"name": "Green",
+		"text": "Would you do me a favor and give this to Orange?",
+		"pic": "res://assets/portraits/green.png"
+	},
+	{
+		"name": "Green",
+		"text": "He'll know what to do with it.",
+		"pic": "res://assets/portraits/green.png",
+		"quest_step": "quest_02"
+	}
+]}

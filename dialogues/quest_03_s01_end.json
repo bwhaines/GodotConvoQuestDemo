@@ -1,0 +1,21 @@
+{
+	"char_id":"orange",
+	"lines": [
+	{
+		"name": "Orange",
+		"text": "Nope, I don't... Oh? What's that now?",
+		"pic": "res://assets/portraits/orange.png"
+	},
+	{
+		"name": "Orange",
+		"text": "How did I not know that!?",
+		"pic": "res://assets/portraits/orange.png"
+	},
+	{
+		"name": "Orange",
+		"text": "Ok, you're officially awesome again.",
+		"pic": "res://assets/portraits/orange.png",
+		"quest_step": "quest_03",
+		"rel_change": {"orange":20}
+	}
+]}

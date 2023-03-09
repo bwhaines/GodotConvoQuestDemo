@@ -1,0 +1,21 @@
+{
+	"char_id":"purple",
+		"lines": [
+		{
+			"name": "Purple",
+			"text": "I hear Orange is pretty mad at you.",
+			"pic": "res://assets/portraits/purple.png"
+		},
+		{
+			"name": "Purple",
+			"text": "Lucky for you I know how to get on his good side again.",
+			"pic": "res://assets/portraits/purple.png"
+		},
+		{
+			"name": "Purple",
+			"text": "Just ask Green to tell you a secret that Orange doesn't know.",
+			"pic": "res://assets/portraits/purple.png",
+			"quest_step": "quest_03"
+		}
+	]
+}
