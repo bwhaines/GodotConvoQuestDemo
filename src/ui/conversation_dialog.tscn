@@ -1,11 +1,15 @@
-[gd_scene load_steps=3 format=3 uid="uid://dy3rl7wlnuswy"]
+[gd_scene load_steps=5 format=3 uid="uid://dy3rl7wlnuswy"]
 
 [ext_resource type="Script" path="res://src/ui/conversation_dialog.gd" id="1_6t0ig"]
+[ext_resource type="Texture2D" uid="uid://ckh4ks5fj0oks" path="res://assets/portraits/green.png" id="2_7oxwi"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_p4peq"]
 font_size = 36
 outline_size = 3
 outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_u2moj"]
+font_size = 28
 
 [node name="ConversationDialog" type="Control"]
 layout_mode = 3
@@ -16,7 +20,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_6t0ig")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="DialoguePanel" type="Panel" parent="."]
 custom_minimum_size = Vector2(0, 180)
 layout_mode = 0
 anchor_top = 1.0
@@ -25,13 +29,49 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="Label" type="Label" parent="Panel"]
-layout_mode = 0
+[node name="Label" type="Label" parent="DialoguePanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.25
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "This is a test sentence!"
 label_settings = SubResource("LabelSettings_p4peq")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+text_overrun_behavior = 3
+
+[node name="TextureRect" type="TextureRect" parent="DialoguePanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.25
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = -12.0
+texture = ExtResource("2_7oxwi")
+expand_mode = 2
+stretch_mode = 5
+
+[node name="NamePanel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 427.0
+offset_right = 263.0
+offset_bottom = 467.0
+
+[node name="Label" type="Label" parent="NamePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "NAME"
+label_settings = SubResource("LabelSettings_u2moj")
 horizontal_alignment = 1
 vertical_alignment = 1
