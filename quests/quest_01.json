@@ -6,11 +6,15 @@
 	"stages": [
 		{
 			"stage_gate": "purple",
-			"end_convo": "quest_01_s00_end"
+			"pass_convo": "quest_01_s00_end",
+			"fail_gate": "green",
+			"fail_convo": "quest_01_fail"
 		},
 		{
 			"stage_gate": "orange",
-			"end_convo": "quest_01_s01_end"
+			"pass_convo": "quest_01_s01_end",
+			"fail_gate": "green",
+			"fail_convo": "quest_01_fail"
 		}
 	],
 	"reward_rel_change": 3,

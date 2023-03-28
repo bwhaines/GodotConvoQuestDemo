@@ -12,6 +12,7 @@ const CONVO_UI_SCENE : PackedScene = preload("res://src/ui/conversation_dialog.t
 
 var current_convo := {}
 var current_line := 0
+# Dictionary containing each characters list of quests that they will discuss
 var _convo_queues : Dictionary = {
 	"orange": [],
 	"purple": [],
@@ -39,27 +40,30 @@ func load_conversation(filepath:String, convo_ui:ConversationDialog):
 				[filepath, json.get_error_message()])
 
 
-# Load the first convo in the given character's queue, if it exists
+# Load the relevant convo for the first quest in the given character's queue
 func char_queue_pop(char_id:String, convo_ui:ConversationDialog) -> bool :
 	if _convo_queues[char_id].is_empty():
 		return false
 	else:
-		load_conversation(_convo_queues[char_id].pop_front(), convo_ui)
-		return true
-
-
-# Add a given file to the character's queue
-func char_queue_push(char_id:String, filepath:String) -> bool :
-	if _convo_queues.has(char_id):
-		if FileAccess.file_exists(filepath):
-			_convo_queues[char_id].push_back(filepath)
-			return true
-		else:
-			print("Error: file %s does not exist!" % char_id)
+		var convo : String = QuestManager.get_quest_step_convo(
+				char_id,
+				_convo_queues[char_id].pop_front())
+		if convo == "":
 			return false
-	else:
-		print("Error: character %s does not have a queue!" % char_id)
-		return false
+		else:
+			load_conversation(convo, convo_ui)
+			return true
+
+
+# Add a given quest id to the character's queue
+func char_queue_push(char_id:String, quest_id:String) -> void :
+	# Add character ID to queue list if it doesn't already exist
+	if not _convo_queues.has(char_id):
+		_convo_queues[char_id] = []
+	
+	# Only add id if it's not already there
+	if not _convo_queues[char_id].has(quest_id):
+		_convo_queues[char_id].push_back(quest_id)
 
 
 # Display the next line in the conversation file, or clear the windows if the

@@ -7,7 +7,7 @@
 	"stages": [
 		{
 			"stage_gate": "orange",
-			"end_convo": "quest_02_s00_end"
+			"pass_convo": "quest_02_s00_end"
 		}
 	],
 	"reward_rel_change": 3,

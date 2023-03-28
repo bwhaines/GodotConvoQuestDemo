@@ -47,20 +47,52 @@ func advance_quest_step(id_str:String) -> void:
 	if active_quests.has(id_str):
 		var q : Quest = active_quests[id_str]
 		q.stage += 1
-		_add_quest_step_convos(id_str, q.stage)
 		# If no more stages left, mark the quest as completed
 		if q.stage >= q.data["stages"].size():
 			mark_complete(id_str)
+		else:
+			_add_quest_step_convos(q)
 	
 	# If the quest is just starting...
 	elif inactive_quests.has(id_str):
 		var q : Quest = inactive_quests[id_str]
 		begin_quest(id_str)
-		_add_quest_step_convos(id_str, q.stage)
+		_add_quest_step_convos(q)
 	
 	# Error
 	else:
 		print("Given quest %s cannot proceed!" % id_str)
+
+
+# Get the correct conversation to display for a given quest
+func get_quest_step_convo(char_id:String, quest_str:String) -> String:
+	var q : Quest
+	
+	# If the quest isn't active, return the start conversation
+	if inactive_quests.has(quest_str):
+		q = inactive_quests[quest_str]
+		return "%s/%s.json" % [CONVO_FILES_PATH, q.data["start_convo"]]
+	
+
+	if active_quests.has(quest_str):
+		q = active_quests[quest_str]
+		var stage_data := q.get_current_stage_data()
+		
+		# First see if the char_id is the stage_gate (will advance the quest) or
+		# the fail_gate (will fail the quest)
+		if stage_data.has("fail_gate") and stage_data["fail_gate"] == char_id:
+			return "%s/%s.json" % [CONVO_FILES_PATH, stage_data["fail_convo"]]
+		
+		# If quest is active, return either the pass or stop convo depending on
+		# whether the current stage's prerequisites are met
+		if q.is_quest_stage_complete():
+			return "%s/%s.json" % [CONVO_FILES_PATH, stage_data["pass_convo"]]
+		else:
+			return "%s/%s.json" % [CONVO_FILES_PATH, stage_data["stop_convo"]]
+	
+	# If we get here, something is wrong!
+	print("Error: get_quest_step_convo failed for %s" % quest_str)
+	return ""
 
 
 # Put quest in active list and emit signal, prep failure conditions
@@ -68,17 +100,6 @@ func begin_quest(id_str:String) -> void:
 	active_quests[id_str] = inactive_quests[id_str]
 	inactive_quests.erase(id_str)
 	quest_started.emit()
-	
-	# Move fail convo (if it exists) to relevant character convo queue
-	var fail_convo = "%s/%s_fail.json" % [CONVO_FILES_PATH, id_str]
-	if FileAccess.file_exists(fail_convo):
-		var json = JSON.new()
-		var file = FileAccess.open(fail_convo, FileAccess.READ)
-		if json.parse(file.get_as_text()) == OK:
-			var char_id : String = json.data["char_id"]
-			ConversationManager.char_queue_push(char_id, fail_convo)
-		else:
-			print("Error parsing dialogue file %s" % fail_convo)
 
 
 # Move quest from active to completed, emit signal, update relationships and
@@ -119,23 +140,15 @@ func _check_unavailable_quests() -> void:
 			_move_quest_to_inactive(q.id)
 
 
-# Add any convos related to the given quest stage to the convo queues
-func _add_quest_step_convos(id_str:String, step:int) -> bool:
-	for f in DirAccess.get_files_at(CONVO_FILES_PATH):
-		var file_prefix := "%s_s%02d" % [id_str, step]
-		if f.contains(file_prefix):
-			# Determine who to talk to, to initiate this convo
-			var json = JSON.new()
-			var filepath := "%s/%s" % [CONVO_FILES_PATH, f]
-			var file = FileAccess.open(filepath, FileAccess.READ)
-			if json.parse(file.get_as_text()) == OK:
-				var char_id : String = json.data["char_id"]
-				ConversationManager.char_queue_push(char_id, filepath)
-				return true
-			else:
-				print("Error parsing dialogue file %s" % f)
-				return false
-	return false
+# Add quest ID to stage_gate character's convo queue, and to fail_gate char's 
+# queue if there is one
+func _add_quest_step_convos(quest:Quest) -> void:
+	var stage_data := quest.get_current_stage_data()
+	
+	ConversationManager.char_queue_push(stage_data["stage_gate"], quest.id)
+	
+	if stage_data.has("fail_gate"):
+		ConversationManager.char_queue_push(stage_data["fail_gate"], quest.id)
 
 
 # Move the quest from the unavailable list to the inactive list and add the
@@ -148,5 +161,5 @@ func _move_quest_to_inactive(id_str:String) -> void:
 	var q : Quest = inactive_quests[id_str]
 	ConversationManager.char_queue_push(
 			q.data["giver"], 
-			"%s/%s.json" % [CONVO_FILES_PATH, q.data["start_convo"]])
+			id_str)
 

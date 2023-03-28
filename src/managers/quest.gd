@@ -22,6 +22,11 @@ func _init(path:String):
 		print("Error parsing json from %s: %s", path, json.get_error_message())
 
 
+# Return the portion of the JSON data relating to the current stage of the quest
+func get_current_stage_data() -> Dictionary:
+	return data["stages"][stage]
+
+
 # Checks if all prerequisites for the current quest have been met
 func is_quest_available() -> bool:
 	# First check if prereq quests are all finished
@@ -40,6 +45,25 @@ func is_quest_available() -> bool:
 	if data.has("prereq_rels"):
 		for npc_id in data["prereq_rels"].keys():
 			var threshold = data["prereq_rels"][npc_id]
+			if RelationshipManager.get_relationship_value(npc_id) < threshold:
+				return false
+	
+	return true
+
+
+# Checks if the prerequisites for the current quest stage are met
+func is_quest_stage_complete() -> bool:
+	var stage_data : Dictionary = data["stages"][stage]
+	
+	# First check for prerequisite items
+	if stage_data.has("stage_cond_item"):
+		if not InventoryManager.inventory_has_item(stage_data["stage_cond_item"]):
+			return false
+	
+	# Second check relationship prerequisites
+	if stage_data.has("stage_cond_rel"):
+		for npc_id in stage_data["stage_cond_rel"].keys():
+			var threshold = stage_data["stage_cond_rel"][npc_id]
 			if RelationshipManager.get_relationship_value(npc_id) < threshold:
 				return false
 	
