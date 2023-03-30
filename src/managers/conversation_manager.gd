@@ -7,8 +7,6 @@ extends Node
 signal conversation_started
 signal conversation_ended
 
-const CONVO_UI_SCENE : PackedScene = preload("res://src/ui/conversation_dialog.tscn")
-
 
 var current_convo := {}
 var current_line := 0
@@ -21,7 +19,7 @@ var _convo_queues : Dictionary = {
 
 
 # Load conversation information from a given file and display it in a dialog
-func load_conversation(filepath:String, convo_ui:ConversationDialog):
+func load_conversation(filepath:String):
 	# Load data from given conversation file
 	var json = JSON.new()
 	var file = FileAccess.open(filepath, FileAccess.READ)
@@ -32,16 +30,14 @@ func load_conversation(filepath:String, convo_ui:ConversationDialog):
 		if typeof(json.data) == TYPE_DICTIONARY:
 			current_convo = json.data
 			current_line = -1
-			# Display the conversation UI
 			conversation_started.emit()
-			advance_line(convo_ui)
 	else:
 		print("Error parsing json from %s: %s" % 
 				[filepath, json.get_error_message()])
 
 
 # Load the relevant convo for the first quest in the given character's queue
-func char_queue_pop(char_id:String, convo_ui:ConversationDialog) -> bool :
+func char_queue_pop(char_id:String) -> bool :
 	if _convo_queues[char_id].is_empty():
 		return false
 	else:
@@ -51,7 +47,7 @@ func char_queue_pop(char_id:String, convo_ui:ConversationDialog) -> bool :
 		if convo == "":
 			return false
 		else:
-			load_conversation(convo, convo_ui)
+			load_conversation(convo)
 			return true
 
 
@@ -66,18 +62,17 @@ func char_queue_push(char_id:String, quest_id:String) -> void :
 		_convo_queues[char_id].push_back(quest_id)
 
 
-# Display the next line in the conversation file, or clear the windows if the
-# conversation is done
-func advance_line(convo_ui:ConversationDialog) -> bool:
+# Return the next line info of the conversation, or an empty dictionary if the
+# conversation has ended
+func advance_line() -> Dictionary:
 	# Increment the conversation line counter and check if convo is over
 	current_line += 1
 	if current_line >= current_convo["lines"].size():
 		_clear_dialog()
-		return false
+		return {}
 	
-	# Display the next line of the current conversation
+	# Get the next line of the current conversation
 	var new_line : Dictionary = current_convo["lines"][current_line]
-	convo_ui.display_line(new_line["text"], new_line["name"], new_line["pic"])
 	
 	# Handle any other attributes in new_line
 	if new_line.has("give_item"):
@@ -94,7 +89,7 @@ func advance_line(convo_ui:ConversationDialog) -> bool:
 	if new_line.has("quest_fail"):
 		QuestManager.mark_failed(new_line["quest_fail"])
 	
-	return true
+	return new_line
 
 
 # Remove any conversations pertaining to given quest from all convo queues
