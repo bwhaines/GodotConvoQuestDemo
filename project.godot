@@ -17,10 +17,14 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-ConversationManager="*res://src/managers/conversation_manager.gd"
-QuestManager="*res://src/managers/quest_manager.gd"
-RelationshipManager="*res://src/managers/relationship_manager.gd"
-InventoryManager="*res://src/managers/inventory_manager.gd"
+ConversationManager="*res://addons/convoquest/src/conversation_manager.gd"
+QuestManager="*res://addons/convoquest/src/quest_manager.gd"
+RelationshipManager="*res://addons/convoquest/src/relationship_manager.gd"
+InventoryManager="*res://addons/convoquest/src/inventory_manager.gd"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/convoquest/plugin.cfg")
 
 [input]
 
