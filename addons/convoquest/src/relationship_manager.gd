@@ -19,3 +19,13 @@ func get_relationship_value(npc_id: String) -> int:
 	else:
 		_relationships[npc_id] = 0
 		return 0
+
+
+# Get full dictionary of relationships for saving game data
+func get_relationships() -> Dictionary:
+	return _relationships
+
+
+# Replace relationships dictionary
+func set_relationships(new_rels:Dictionary) -> void:
+	_relationships = new_rels

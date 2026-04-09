@@ -3,6 +3,7 @@ extends Node
 # appear when the player interacts with an NPC.  It also emits signals that are
 # defined in the conversation JSON files.
 
+const CONFIG_FILE_PATH := "res://convo_data.json"
 
 signal conversation_started
 signal conversation_ended
@@ -12,10 +13,17 @@ var current_convo := {}
 var current_line := 0
 # Dictionary containing each characters list of quests that they will discuss
 var _convo_queues : Dictionary = {
-	"orange": [],
-	"purple": [],
-	"green": []
 }
+
+
+func _ready() -> void:
+	# Search for a config file to load initial _convo_queues
+	if FileAccess.file_exists(CONFIG_FILE_PATH):
+		var json_helper = JSON.new()
+		var convo_data_file = FileAccess.open(CONFIG_FILE_PATH, FileAccess.READ)
+		if json_helper.parse(convo_data_file.get_line()) != OK:
+			print("[ConversationManager] Error: Could not read data from config file at %s" % CONFIG_FILE_PATH)
+		_convo_queues = json_helper.data["convo_queues"]
 
 
 # Load conversation information from a given file and display it in a dialog
@@ -105,3 +113,13 @@ func _clear_dialog() -> void:
 	current_convo = {}
 	current_line = -1
 	conversation_ended.emit()
+
+
+# Return the list of conversation queues, useful for saving game data
+func get_convo_queues() -> Dictionary:
+	return _convo_queues
+
+
+# Overwrite the list of queues, useful for loading saved data
+func set_convo_queues(new_queues:Dictionary) -> void:
+	_convo_queues = new_queues

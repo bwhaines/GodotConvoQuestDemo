@@ -162,4 +162,3 @@ func _move_quest_to_inactive(id_str:String) -> void:
 	ConversationManager.char_queue_push(
 			q.data["giver"], 
 			id_str)
-
