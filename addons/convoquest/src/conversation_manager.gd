@@ -27,7 +27,7 @@ func _ready() -> void:
 
 
 # Load conversation information from a given file and display it in a dialog
-func load_conversation(filepath:String):
+func load_conversation(filepath:String, emit_signal:bool = true):
 	# Load data from given conversation file
 	var json = JSON.new()
 	var file = FileAccess.open(filepath, FileAccess.READ)
@@ -38,7 +38,8 @@ func load_conversation(filepath:String):
 		if typeof(json.data) == TYPE_DICTIONARY:
 			current_convo = json.data
 			current_line = -1
-			conversation_started.emit()
+			if emit_signal:
+				conversation_started.emit()
 	else:
 		print("Error parsing json from %s: %s" % 
 				[filepath, json.get_error_message()])
