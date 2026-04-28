@@ -12,8 +12,7 @@ signal conversation_ended
 var current_convo := {}
 var current_line := 0
 # Dictionary containing each characters list of quests that they will discuss
-var _convo_queues : Dictionary = {
-}
+var _convo_queues : Dictionary = {}
 
 
 func _ready() -> void:
@@ -24,10 +23,17 @@ func _ready() -> void:
 		if json_helper.parse(convo_data_file.get_line()) != OK:
 			print("[ConversationManager] Error: Could not read data from config file at %s" % CONFIG_FILE_PATH)
 		_convo_queues = json_helper.data["convo_queues"]
+	else:
+		print("[ConversationManager] Warning: No config file found.")
 
 
 # Load conversation information from a given file and display it in a dialog
 func load_conversation(filepath:String, emit_signal:bool = true):
+	# Ensure the given file exists
+	if not FileAccess.file_exists(filepath):
+		print("[ConversationManager] Error: conversation file at %s not found" %
+				filepath)
+	
 	# Load data from given conversation file
 	var json = JSON.new()
 	var file = FileAccess.open(filepath, FileAccess.READ)
@@ -41,14 +47,19 @@ func load_conversation(filepath:String, emit_signal:bool = true):
 			if emit_signal:
 				conversation_started.emit()
 	else:
-		print("Error parsing json from %s: %s" % 
+		print("[ConversationManager] Error: could not parse json from %s: %s" % 
 				[filepath, json.get_error_message()])
 
 
 # Load the relevant convo for the first quest in the given character's queue
 func char_queue_pop(char_id:String) -> bool :
+	# If this character isn't in existing convo data, add it
+	if not _convo_queues.has(char_id):
+		_convo_queues[char_id] = []
+	# If queue is empty, return false to signify nothing is queued to discuss
 	if _convo_queues[char_id].is_empty():
 		return false
+	# ...else there is something in the queue
 	else:
 		var convo : String = QuestManager.get_quest_step_convo(
 				char_id,
@@ -74,14 +85,27 @@ func char_queue_push(char_id:String, quest_id:String) -> void :
 # Return the next line info of the conversation, or an empty dictionary if the
 # conversation has ended
 func advance_line() -> Dictionary:
-	# Increment the conversation line counter and check if convo is over
-	current_line += 1
-	if current_line >= current_convo["lines"].size():
-		_clear_dialog()
-		return {}
+	var new_line := {}
 	
-	# Get the next line of the current conversation
-	var new_line : Dictionary = current_convo["lines"][current_line]
+	# Case 1: Full conversation
+	if current_convo.has("lines"):
+		# Increment the conversation line counter and check if convo is over
+		current_line += 1
+		if current_line >= current_convo["lines"].size():
+			_clear_dialog()
+			return {}
+		# Get the next line of the current conversation
+		new_line = current_convo["lines"][current_line]
+	
+	# Case 2: Random one-off quips/banter
+	elif current_convo.has("quips"):
+		# Only return something once then clear the convo
+		if current_line != -1:
+			_clear_dialog()
+			return {}
+		# Grab a random line from the file
+		current_line = randi_range(0, current_convo["quips"].size()-1)
+		new_line = current_convo["quips"][current_line]
 	
 	# Handle any other attributes in new_line
 	if new_line.has("give_item"):
