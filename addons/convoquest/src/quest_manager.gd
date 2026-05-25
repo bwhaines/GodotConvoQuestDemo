@@ -26,7 +26,8 @@ var failed_quests: Dictionary = {}
 func _ready():
 	# Open and parse all quest data files
 	for f in DirAccess.get_files_at(QUEST_FILES_PATH):
-		var quest = Quest.new(f)
+		var quest = Quest.new()
+		quest.load_from_file(f)
 		unavailable_quests[quest.id] = quest
 	
 	# Check for newly available quests after each conversation
