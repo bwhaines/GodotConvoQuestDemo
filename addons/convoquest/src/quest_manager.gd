@@ -139,6 +139,9 @@ func _check_unavailable_quests() -> void:
 	for q in unavailable_quests.values():
 		if q.is_quest_available():
 			_move_quest_to_inactive(q.id)
+			# If a quest doesn't have a giver, start it immediately
+			if q.data["giver"] == "null":
+				advance_quest_step(q.id)
 
 
 # Add quest ID to stage_gate character's convo queue, and to fail_gate char's 
@@ -146,7 +149,8 @@ func _check_unavailable_quests() -> void:
 func _add_quest_step_convos(quest:Quest) -> void:
 	var stage_data := quest.get_current_stage_data()
 	
-	ConversationManager.char_queue_push(stage_data["stage_gate"], quest.id)
+	if stage_data.has("stage_gate"):
+		ConversationManager.char_queue_push(stage_data["stage_gate"], quest.id)
 	
 	if stage_data.has("fail_gate"):
 		ConversationManager.char_queue_push(stage_data["fail_gate"], quest.id)
@@ -158,8 +162,9 @@ func _move_quest_to_inactive(id_str:String) -> void:
 	inactive_quests[id_str] = unavailable_quests[id_str]
 	unavailable_quests.erase(id_str)
 	
-	# Add start convo to the relevant character convo queue
+	# Add start convo to the relevant character convo queue, if it exists
 	var q : Quest = inactive_quests[id_str]
-	ConversationManager.char_queue_push(
-			q.data["giver"], 
-			id_str)
+	if q.data["giver"] != "null":
+		ConversationManager.char_queue_push(
+				q.data["giver"], 
+				id_str)
