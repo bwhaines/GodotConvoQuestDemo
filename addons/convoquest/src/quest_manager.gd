@@ -112,9 +112,11 @@ func mark_complete(id_str:String) -> void:
 	active_quests.erase(id_str)
 	quest_completed.emit()
 	
-	RelationshipManager.update_relationship(
-			quest.data["giver"],
-			quest.data["reward_rel_change"])
+	if quest.data.has("reward_rel_change"):
+		RelationshipManager.update_relationship(
+				quest.data["giver"],
+				quest.data["reward_rel_change"])
+	
 	ConversationManager.remove_quest_convos(id_str)
 	_check_unavailable_quests()
 
@@ -128,10 +130,13 @@ func mark_failed(id_str:String) -> void:
 	active_quests.erase(id_str)
 	quest_failed.emit()
 	
-	RelationshipManager.update_relationship(
-			quest.data["giver"],
-			quest.data["failure_rel_change"])
+	if quest.data.has("failure_rel_change"):
+		RelationshipManager.update_relationship(
+				quest.data["giver"],
+				quest.data["failure_rel_change"])
+	
 	ConversationManager.remove_quest_convos(id_str)
+	_check_unavailable_quests()
 
 
 # Check all quests in the unavailable list to see if prerequisites have been met
