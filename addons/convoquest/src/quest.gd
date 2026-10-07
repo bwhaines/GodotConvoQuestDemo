@@ -1,13 +1,21 @@
 class_name Quest
 extends Resource
+## Quest is a resource for storing data about playable missions in-game.
+##
+## Quest is a resource used by the game to tracks the start conditions, success
+## and failure conditions, and stages of an in-game quest the player can
+## participate in.
 
 
+## A Dictionary containing quest metadata
 @export var data : Dictionary = {}
+## Unique ID string for this Quest
 @export var id : String
+## Current stage of the Quest the player is on
 @export var stage : int = 0
 
 
-# Constructor, takes path to JSON file containing Quest data
+## Constructs a Quest from a given JSON file containing Quest data.
 func load_from_file(path:String):
 	
 	# Read in file text and parse JSON into dictionary
@@ -22,12 +30,12 @@ func load_from_file(path:String):
 		print("Error parsing json from %s: %s", path, json.get_error_message())
 
 
-# Return the portion of the JSON data relating to the current stage of the quest
+## Returns the portion of the data relating to the current stage of the quest.
 func get_current_stage_data() -> Dictionary:
 	return data["stages"][stage]
 
 
-# Checks if all prerequisites for the current quest have been met
+## Checks if all prerequisites for the current quest have been met.
 func is_quest_available() -> bool:
 	# First check if prereq quests are all finished
 	if data.has("prereq_quests"):
@@ -51,7 +59,7 @@ func is_quest_available() -> bool:
 	return true
 
 
-# Checks if the prerequisites for the current quest stage are met
+## Checks if the prerequisites for the current quest stage are met.
 func is_quest_stage_complete() -> bool:
 	var stage_data : Dictionary = data["stages"][stage]
 	

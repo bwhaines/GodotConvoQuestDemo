@@ -1,17 +1,24 @@
 extends Node
-# ConversationManager is a singleton class that manages what conversations will
-# appear when the player interacts with an NPC.  It also emits signals that are
-# defined in the conversation JSON files.
+## ConversationManager handles what conversations happen when.
+##
+## ConversationManager is a singleton class that manages what conversations will
+## appear when the player interacts with an NPC.  It also emits signals that are
+## defined in the conversation JSON files.
 
+## Path to configuration data
 const CONFIG_FILE_PATH := "res://convo_data.json"
 
+## Signal emitted when player initiates a conversation with an NPC
 signal conversation_started
+## Signal emitted when a conversation reaches its end
 signal conversation_ended
 
 
+## A dictionary containing info for the current ongoing conversation
 var current_convo := {}
+## The line number of the ongoing conversation last seen
 var current_line := 0
-# Dictionary containing each characters list of quests that they will discuss
+## Dictionary containing each characters list of quests that they will discuss
 var _convo_queues : Dictionary = {}
 
 
@@ -27,7 +34,7 @@ func _ready() -> void:
 		print("[ConversationManager] Warning: No config file found.")
 
 
-# Load conversation information from a given file and display it in a dialog
+## Loads conversation information from a given file and display it in a dialog.
 func load_conversation(filepath:String, emit_signal:bool = true):
 	# Ensure the given file exists
 	if not FileAccess.file_exists(filepath):
@@ -51,7 +58,7 @@ func load_conversation(filepath:String, emit_signal:bool = true):
 				[filepath, json.get_error_message()])
 
 
-# Load the relevant convo for the first quest in the given character's queue
+## Loads the relevant convo for the first quest in the given character's queue.
 func char_queue_pop(char_id:String) -> bool :
 	# If this character isn't in existing convo data, add it
 	if not _convo_queues.has(char_id):
@@ -71,7 +78,7 @@ func char_queue_pop(char_id:String) -> bool :
 			return true
 
 
-# Add a given quest id to the character's queue
+## Adds a given quest id to the character's queue.
 func char_queue_push(char_id:String, quest_id:String) -> void :
 	# Add character ID to queue list if it doesn't already exist
 	if not _convo_queues.has(char_id):
@@ -82,8 +89,8 @@ func char_queue_push(char_id:String, quest_id:String) -> void :
 		_convo_queues[char_id].push_back(quest_id)
 
 
-# Return the next line info of the conversation, or an empty dictionary if the
-# conversation has ended
+## Returns the next line info of the conversation, or an empty dictionary if the
+## conversation has ended.
 func advance_line() -> Dictionary:
 	var new_line := {}
 	
@@ -125,7 +132,7 @@ func advance_line() -> Dictionary:
 	return new_line
 
 
-# Remove any conversations pertaining to given quest from all convo queues
+## Removes any conversations pertaining to given quest from all convo queues.
 func remove_quest_convos(id_str:String) -> void:
 	for queue in _convo_queues.values():
 		for convo in queue:
@@ -133,18 +140,18 @@ func remove_quest_convos(id_str:String) -> void:
 				queue.erase(convo)
 
 
-# Remove the conversation UI and reset "current_" vars
+# Removes the conversation UI and resets "current_" vars.
 func _clear_dialog() -> void:
 	current_convo = {}
 	current_line = -1
 	conversation_ended.emit()
 
 
-# Return the list of conversation queues, useful for saving game data
+## Returns the list of conversation queues, useful for saving game data.
 func get_convo_queues() -> Dictionary:
 	return _convo_queues
 
 
-# Overwrite the list of queues, useful for loading saved data
+## Overwrites the list of queues, useful for loading saved data.
 func set_convo_queues(new_queues:Dictionary) -> void:
 	_convo_queues = new_queues

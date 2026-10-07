@@ -1,25 +1,34 @@
 extends Node
-# QuestManager is a singleton class that organizes and handles signals for
-# player quests.
+## QuestManager handles the status and consequences of quests.
+##
+## QuestManager is a singleton class that organizes and handles signals for
+## player quests, updates player relationships upon quest failure or success, 
+## and organizes quests based on status.
 
 
+## Signal emitted when a player begins a quest and it is added to the
+## active_quests dictionary
 signal quest_started()
+## Signal emitted when a player successfully completes a quests requirements
 signal quest_completed()
+## Signal emitted when a player triggers a fail case for a quest
 signal quest_failed()
 
+## Path to the folder containing quest files
 const QUEST_FILES_PATH : String = "res://quests"
+## Path to the folder containing dialogue files
 const CONVO_FILES_PATH : String = "res://dialogues"
 
 
-# List of quests whose prerequisites are not met
+## List of quests whose prerequisites are not met and cannot be started
 var unavailable_quests : Dictionary = {}
-# List whose prerequisites are met, but has not started
+## List whose prerequisites are met, but has not been started
 var inactive_quests : Dictionary = {}
-# List of active quests
+## List of active quests
 var active_quests : Dictionary = {}
-# List of completed quests
+## List of successfully completed quests
 var completed_quests: Dictionary = {}
-# List of failed quests
+## List of failed quests
 var failed_quests: Dictionary = {}
 
 
@@ -37,12 +46,12 @@ func _ready():
 	_check_unavailable_quests()
 
 
-# Returns whether quest with given ID is in the active quests list
+## Returns whether quest with given ID is in the active quests list.
 func is_quest_active(id_str:String) -> bool:
 	return active_quests.has(id_str)
 
 
-# Advance one step in a quest
+## Advances one step in a quest or marks it completed if no more steps exist.
 func advance_quest_step(id_str:String) -> void:
 	# If the quest is already active...
 	if active_quests.has(id_str):
@@ -65,7 +74,7 @@ func advance_quest_step(id_str:String) -> void:
 		print("Given quest %s cannot proceed!" % id_str)
 
 
-# Get the correct conversation to display for a given quest
+## Gets the correct conversation to display for a given quest.
 func get_quest_step_convo(char_id:String, quest_str:String) -> String:
 	var q : Quest
 	
@@ -96,15 +105,15 @@ func get_quest_step_convo(char_id:String, quest_str:String) -> String:
 	return ""
 
 
-# Put quest in active list and emit signal, prep failure conditions
+## Puts quest in active list and emit signal and prep failure conditions.
 func begin_quest(id_str:String) -> void:
 	active_quests[id_str] = inactive_quests[id_str]
 	inactive_quests.erase(id_str)
 	quest_started.emit()
 
 
-# Move quest from active to completed, emit signal, update relationships and
-# conversation queues
+## Moves quest from active to completed, emits the signal quest_completed, 
+## updates relationship values, and updates conversation queues.
 func mark_complete(id_str:String) -> void:
 	var quest : Quest = active_quests[id_str]
 	
@@ -121,8 +130,8 @@ func mark_complete(id_str:String) -> void:
 	_check_unavailable_quests()
 
 
-# Move quest from active to failed, emit signal, update relationships and
-# conversation queues
+## Moves quest from active to failed, emits the signal quest_failed, updates
+## relationship values, and updates conversation queues.
 func mark_failed(id_str:String) -> void:
 	var quest : Quest = active_quests[id_str]
 	
@@ -139,7 +148,8 @@ func mark_failed(id_str:String) -> void:
 	_check_unavailable_quests()
 
 
-# Check all quests in the unavailable list to see if prerequisites have been met
+# Checks all quests in the unavailable list to see if any's prerequisites have
+# been met so the quest can be moved to the inactive list.
 func _check_unavailable_quests() -> void:
 	for q in unavailable_quests.values():
 		if q.is_quest_available():
@@ -149,8 +159,8 @@ func _check_unavailable_quests() -> void:
 				advance_quest_step(q.id)
 
 
-# Add quest ID to stage_gate character's convo queue, and to fail_gate char's 
-# queue if there is one
+# Adds quest ID to stage_gate character's convo queue, and to fail_gate char's 
+# queue if there is one.
 func _add_quest_step_convos(quest:Quest) -> void:
 	var stage_data := quest.get_current_stage_data()
 	
@@ -161,8 +171,8 @@ func _add_quest_step_convos(quest:Quest) -> void:
 		ConversationManager.char_queue_push(stage_data["fail_gate"], quest.id)
 
 
-# Move the quest from the unavailable list to the inactive list and add the
-# start convo to relevant character convo queue
+# Moves the quest from the unavailable list to the inactive list and adds the
+# start convo to relevant character convo queue.
 func _move_quest_to_inactive(id_str:String) -> void:
 	inactive_quests[id_str] = unavailable_quests[id_str]
 	unavailable_quests.erase(id_str)
