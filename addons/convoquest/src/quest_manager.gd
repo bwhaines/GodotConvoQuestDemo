@@ -21,15 +21,15 @@ const CONVO_FILES_PATH : String = "res://dialogues"
 
 
 ## List of quests whose prerequisites are not met and cannot be started
-var unavailable_quests : Dictionary = {}
+var unavailable_quests : Dictionary[String, Quest] = {}
 ## List whose prerequisites are met, but has not been started
-var inactive_quests : Dictionary = {}
+var inactive_quests : Dictionary[String, Quest] = {}
 ## List of active quests
-var active_quests : Dictionary = {}
+var active_quests : Dictionary[String, Quest] = {}
 ## List of successfully completed quests
-var completed_quests: Dictionary = {}
+var completed_quests: Dictionary[String, Quest] = {}
 ## List of failed quests
-var failed_quests: Dictionary = {}
+var failed_quests: Dictionary[String, Quest] = {}
 
 
 func _ready():

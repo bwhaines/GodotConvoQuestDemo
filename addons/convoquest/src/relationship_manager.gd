@@ -6,7 +6,7 @@ extends Node
 
 ## A dictionary to store relationship values in the form 
 ## [code]"npc_id": <int>[/code]
-var _relationships : Dictionary = {}
+var _relationships : Dictionary[String, int] = {}
 
 
 ## Updates an NPC's relationship value, adding it if it doesn't already exist.

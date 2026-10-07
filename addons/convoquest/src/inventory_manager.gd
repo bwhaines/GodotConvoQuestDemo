@@ -9,7 +9,7 @@ extends Node
 ## Amount of money the player has
 var currency : int = 999
 ## Dictionary of items the player has collected and their quantity
-var _inventory := {}
+var _inventory : Dictionary[String, int] = {}
 ## List of keys the player has
 var _keyring : Array[String] = []
 
