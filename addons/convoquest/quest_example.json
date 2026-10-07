@@ -1,0 +1,38 @@
+{
+    "id": "quest_01",               // Unique ID string for this quest
+    "name":"What's that key?",      // Human-readable name, used for lists of quests in UI
+    "desc":"I found an old key. Surely it opens a wonderous treasure...",
+                                    // Human-readable description, used for quest details/journals
+    "prereq_items": ["old_key"],    // Prerequisite item needed to start this quest, if one exists
+    "prereq_quests": ["quest_00"],  // Prerequisite quest needed to be completed to start this quest, if one exists
+    "prereq_rels":{                 // Prerequisite relationship with characters, if they exist
+        "anna": 25                  // Each entry is a character's ID and the relationship necessary
+        },
+    "giver": "anna",                // ID of character giving this quest
+    "start_convo": "q01_init",      // Filepath to conversation file that starts the quest
+    "stages": [                     // Array of stages of this quest, each one may contain...
+        {
+            "stage_gate": "bob",              // ID of character gating this stage
+            "pass_convo": "q01_s01_pass",     // Conversation with stage_gate if stage 01 condition IS met, or if no conditions exist
+            "fail_gate": "cal",               // ID of character that talking to will fail the quest
+            "fail_convo": "q01_s01_fail",     // Conversation with fail_gate
+        },
+        {
+            "stage_gate": "dee",
+            "stage_desc": "Bob gave me a clue to the chest the key goes to!",  // Short description displayed in the diary when this stage is reached
+            "stage_cond_item": "old_chest",   // Prerequisite item needed to finish this stage
+            "stage_cond_rel": {"dee": 25},    // Prerequisite relationship needed to finish this stage
+            "stop_convo": "q01_s02_stop",     // Conversation with stage_gate if stage 02 condition is not met
+            "pass_convo": "q01_s02_pass",     // Conversation with stage_gate if stage 02 condition is met
+        },
+        {
+            "stage_gate": "anna",
+            "pass_convo": "q01_s03_pass",
+        },
+    ],
+    "reward_item": "lockpick",   // Item player receives on completion
+    "reward_rel_change": 5,      // Relationship change with quest giver if completed
+    "complete_desc": "Done, but not worth it.",  // Short description displayed in the diary if the quest is completed successfully
+    "failure_rel_change": -8,    // Relationship change with quest giver if failed
+    "failure_desc": "I decided not to go through with it."  // Short description displayed in the diary if the quest is failed
+}

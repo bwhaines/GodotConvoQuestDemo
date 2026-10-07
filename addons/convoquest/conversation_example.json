@@ -1,0 +1,26 @@
+{
+    "char_id":"orange",          // ID of the NPC character the player is talking to
+    "lines": [                   // Array of dictionaries, each one containing a single line of dialogue
+        {
+            "name": "Orange",    // Name of the NPC as it is displayed to the player
+            "text": "Hey you!",  // Text to be displayed to the player
+            "pic": "res://assets/portraits/orange.png"  // Path to image file for this character
+        },
+        {
+            "name": "Orange",
+            "text": "Can you give Purple a message for me?",
+            "pic": "res://assets/portraits/orange.png"
+        },
+        {
+            "name": "Orange",
+            "text": "Whatever you do, DO NOT talk to Green before you talk to Purple.",
+            "pic": "res://assets/portraits/orange.png"
+        },
+        {
+            "name": "Orange",
+            "text": "I will NOT be happy with you if you talk to Green first!",
+            "pic": "res://assets/portraits/orange.png",
+            "quest_step": "quest_01"  // ID for quest to advance one stage
+        }
+    ]
+}
